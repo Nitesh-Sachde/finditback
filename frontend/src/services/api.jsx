@@ -1,7 +1,7 @@
 import axios from "axios";
-import { auth } from "../config/firebase";
+import { auth } from "../config/firebase.js";
 
-const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000/api/v1";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
 
 // Create axios instance
 const api = axios.create({

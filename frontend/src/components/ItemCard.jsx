@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { MapPin, Calendar } from "lucide-react";
-import { formatDate, truncateText } from "../utils/helpers";
+import { formatDate, truncateText } from "../utils/helpers.js";
 
 const ItemCard = ({ item, type = "lost", onAction }) => {
   const isLost = type === "lost";

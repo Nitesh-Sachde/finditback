@@ -1,14 +1,18 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { Mail, Lock, LogIn, Compass } from "lucide-react";
+import { useAuth } from "../context/AuthContext.jsx";
+import { Mail, Lock, User, UserPlus, Compass } from "lucide-react";
 import toast from "react-hot-toast";
 
-const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const Signup = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
   const [loading, setLoading] = useState(false);
-  const { login, loginWithGoogle, currentUser } = useAuth();
+  const { signup, loginWithGoogle, currentUser } = useAuth();
   const navigate = useNavigate();
 
   // Redirect if already logged in
@@ -18,63 +22,121 @@ const Login = () => {
     }
   }, [currentUser, navigate]);
 
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!email || !password) {
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.password ||
+      !formData.confirmPassword
+    ) {
       toast.error("Please fill in all fields");
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      toast.error("Password must be at least 6 characters");
       return;
     }
 
     setLoading(true);
     try {
-      await login(email, password);
+      await signup(formData.email, formData.password, formData.name);
       navigate("/");
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("Signup error:", error);
       const errorMessage =
-        error.code === "auth/user-not-found" ||
-        error.code === "auth/wrong-password"
-          ? "Invalid email or password"
-          : error.message || "Failed to login";
+        error.code === "auth/email-already-in-use"
+          ? "Email already in use"
+          : error.message || "Failed to create account";
       toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleGoogleLogin = async () => {
+  const handleGoogleSignup = async () => {
     setLoading(true);
     try {
       await loginWithGoogle();
       navigate("/");
     } catch (error) {
-      console.error("Google login error:", error);
-      toast.error(error.message || "Failed to login with Google");
+      console.error("Google signup error:", error);
+      toast.error(error.message || "Failed to sign up with Google");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-secondary-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center gradient-hero py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full">
         {/* Logo and Header */}
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <div className="bg-white p-4 rounded-full shadow-lg">
-              <Compass className="h-12 w-12 text-primary-600" />
+            <div className="bg-card p-4 rounded-full shadow-soft">
+              <img
+                src="/logo.png"
+                alt="FindItBack Logo"
+                className="h-16 w-16 object-contain"
+                onError={(e) => {
+                  e.target.style.display = "none";
+                  e.target.nextElementSibling.style.display = "block";
+                }}
+              />
+              <Compass
+                className="h-12 w-12 text-primary-600"
+                style={{ display: "none" }}
+              />
             </div>
           </div>
           <h2 className="text-4xl font-bold text-gray-900 mb-2">
-            Welcome Back
+            Create Account
           </h2>
-          <p className="text-gray-600">Sign in to continue to FindItBack</p>
+          <p className="text-gray-600">Join FindItBack today</p>
         </div>
 
-        {/* Login Form */}
+        {/* Signup Form */}
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Name Input */}
+            <div>
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Full Name
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <User className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="input pl-10"
+                  placeholder="John Doe"
+                  required
+                />
+              </div>
+            </div>
+
             {/* Email Input */}
             <div>
               <label
@@ -89,9 +151,10 @@ const Login = () => {
                 </div>
                 <input
                   id="email"
+                  name="email"
                   type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={formData.email}
+                  onChange={handleChange}
                   className="input pl-10"
                   placeholder="you@example.com"
                   required
@@ -113,9 +176,35 @@ const Login = () => {
                 </div>
                 <input
                   id="password"
+                  name="password"
                   type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="input pl-10"
+                  placeholder="••••••••"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Confirm Password Input */}
+            <div>
+              <label
+                htmlFor="confirmPassword"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Confirm Password
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Lock className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
                   className="input pl-10"
                   placeholder="••••••••"
                   required
@@ -133,8 +222,8 @@ const Login = () => {
                 <div className="spinner" />
               ) : (
                 <>
-                  <LogIn className="h-5 w-5" />
-                  <span>Sign In</span>
+                  <UserPlus className="h-5 w-5" />
+                  <span>Sign Up</span>
                 </>
               )}
             </button>
@@ -154,9 +243,9 @@ const Login = () => {
             </div>
           </div>
 
-          {/* Google Sign In */}
+          {/* Google Sign Up */}
           <button
-            onClick={handleGoogleLogin}
+            onClick={handleGoogleSignup}
             disabled={loading}
             className="w-full btn btn-outline flex items-center justify-center space-x-2 py-3"
           >
@@ -178,18 +267,18 @@ const Login = () => {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            <span>Sign in with Google</span>
+            <span>Sign up with Google</span>
           </button>
 
-          {/* Sign Up Link */}
+          {/* Login Link */}
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Don't have an account?{" "}
+              Already have an account?{" "}
               <Link
-                to="/signup"
+                to="/login"
                 className="font-medium text-primary-600 hover:text-primary-700"
               >
-                Sign up
+                Sign in
               </Link>
             </p>
           </div>
@@ -199,4 +288,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;

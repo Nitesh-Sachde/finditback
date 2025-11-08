@@ -1,4 +1,4 @@
-import api from "./api";
+import api from "./api.jsx";
 
 export const lostItemService = {
   // Create lost item

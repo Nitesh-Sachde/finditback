@@ -8,8 +8,8 @@ import {
   onAuthStateChanged,
   updateProfile,
 } from "firebase/auth";
-import { auth } from "../config/firebase";
-import { authService } from "../services/authService";
+import { auth } from "../config/firebase.js";
+import { authService } from "../services/authService.jsx";
 import toast from "react-hot-toast";
 
 const AuthContext = createContext({});

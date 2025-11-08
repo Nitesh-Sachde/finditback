@@ -6,20 +6,20 @@ import {
   Navigate,
 } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-import { AuthProvider } from "./context/AuthContext";
-import ProtectedRoute from "./components/ProtectedRoute";
-import Navbar from "./components/Navbar";
+import { AuthProvider } from "./context/AuthContext.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import Navbar from "./components/Navbar.jsx";
 
 // Pages
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import Home from "./pages/Home";
-import Search from "./pages/Search";
-import PostItem from "./pages/PostItem";
-import LostItemDetail from "./pages/LostItemDetail";
-import FoundItemDetail from "./pages/FoundItemDetail";
-import Profile from "./pages/Profile";
-import Matches from "./pages/Matches";
+import Login from "./pages/Login.jsx";
+import Signup from "./pages/Signup.jsx";
+import Home from "./pages/Home.jsx";
+import Search from "./pages/Search.jsx";
+import PostItem from "./pages/PostItem.jsx";
+import LostItemDetail from "./pages/LostItemDetail.jsx";
+import FoundItemDetail from "./pages/FoundItemDetail.jsx";
+import Profile from "./pages/Profile.jsx";
+import Matches from "./pages/Matches.jsx";
 
 function App() {
   return (

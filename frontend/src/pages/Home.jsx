@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Search as SearchIcon, TrendingUp, Users, Package } from "lucide-react";
-import { lostItemService } from "../services/lostItemService";
-import { foundItemService } from "../services/foundItemService";
-import ItemCard from "../components/ItemCard";
+import { lostItemService } from "../services/lostItemService.jsx";
+import { foundItemService } from "../services/foundItemService.jsx";
+import ItemCard from "../components/ItemCard.jsx";
 import toast from "react-hot-toast";
 
 const Home = () => {
